@@ -35,7 +35,12 @@ const SelectCharacter = ({ setCharacterNFT }) => {
           <div className="name-container">
             <p>{character.name}</p>
           </div>
-          <img src={character.imageURI} alt={character.name} />
+          <div className="character-image">
+            <img src={character.imageURI} alt={character.name} />
+            <div className="description">
+              <div className="text">John Doe</div>
+            </div>
+          </div>
           <button
             type="button"
             className="character-mint-button"
@@ -52,7 +57,9 @@ const SelectCharacter = ({ setCharacterNFT }) => {
         <div className="name-container">
           <p>???</p>
         </div>
-        <img src="https://i.imgur.com/haouzwo.jpg" alt="random" />
+        <div className="random-image">
+          <img src="https://i.imgur.com/haouzwo.jpg" alt="random" />
+        </div>
         <button
           type="button"
           className="character-mint-button"
