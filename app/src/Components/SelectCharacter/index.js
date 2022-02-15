@@ -29,19 +29,64 @@ const SelectCharacter = ({ setCharacterNFT }) => {
 
   // Render Methods
   const renderCharacters = () => {
-    return characters.map((character, index) => (
-      <div className="character-item" key={character.name}>
-        <div className="name-container">
-          <p>{character.name}</p>
+    return (
+      characters.map((character, index) => (
+        <div className="character-item" key={character.name}>
+          <div className="name-container">
+            <p>{character.name}</p>
+          </div>
+          <img src={character.imageURI} alt={character.name} />
+          <button
+            type="button"
+            className="character-mint-button"
+            onClick={mintCharacterNFTAction(index)}
+          >{`Mint ${character.name}`}</button>
         </div>
-        <img src={character.imageURI} alt={character.name} />
+      ))
+    )  
+  }
+
+  const renderRandomCharacter = () => {
+    return (
+      <div className="character-item" key="random">
+        <div className="name-container">
+          <p>???</p>
+        </div>
+        <img src="https://i.imgur.com/haouzwo.jpg" alt="random" />
         <button
           type="button"
           className="character-mint-button"
-          onClick={mintCharacterNFTAction(index)}
-        >{`Mint ${character.name}`}</button>
+          onClick={
+            mintCharacterNFTAction(Math.floor(Math.random() * (characters.length - 1)))
+          }
+        >{`Mint Random Avenger`}</button>
       </div>
-    ));
+    )
+  }
+
+  const renderContent = () => {
+    if (mintingCharacter) {
+      return <div className="loading">
+        <div className="indicator">
+          <LoadingIndicator />
+          <p>Minting In Progress...</p>
+        </div>
+        <img
+          src="https://allears.net/wp-content/uploads/2020/09/avengers-assemble-gif.gif"
+          alt="Minting loading indicator"
+        />
+      </div>
+    } else {
+      return <>
+        <h2>Mint Your Avenger. Choose wisely.</h2>
+        {characters.length > 0 && (
+          <div className="character-grid">
+            {renderCharacters()}
+            {renderRandomCharacter()}
+          </div>
+        )}
+      </>
+    }
   }
 
   useEffect(() => {
@@ -107,22 +152,7 @@ const SelectCharacter = ({ setCharacterNFT }) => {
 
   return (
     <div className="select-character-container">
-      <h2>Mint Your Avenger. Choose wisely.</h2>
-      {characters.length > 0 && (
-        <div className="character-grid">{renderCharacters()}</div>
-      )}
-      {mintingCharacter && (
-        <div className="loading">
-          <div className="indicator">
-            <LoadingIndicator />
-            <p>Minting In Progress...</p>
-          </div>
-          <img
-            src="https://media2.giphy.com/media/61tYloUgq1eOk/giphy.gif?cid=ecf05e47dg95zbpabxhmhaksvoy8h526f96k4em0ndvx078s&rid=giphy.gif&ct=g"
-            alt="Minting loading indicator"
-          />
-        </div>
-      )}
+      {renderContent()}
     </div>
   );
 };

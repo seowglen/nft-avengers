@@ -24,8 +24,8 @@
 }
 
 .character-item img {
-  height: 300px;
-  width: 350px;
+  height: 400px;
+  width: 320px;
   border-radius: 10px;
   object-fit: cover;
 }

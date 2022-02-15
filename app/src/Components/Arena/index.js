@@ -33,6 +33,16 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
     }
   };
 
+  const runMintAction = async () => {
+    try {
+      if (gameContract) {
+        setCharacterNFT(null);
+      }
+    } catch (error) {
+      console.error('Error running mint action: ', error);
+    }
+  }
+
   // UseEffects
   useEffect(() => {
     const { ethereum } = window;
@@ -94,58 +104,71 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
           <div id="desc">{`💥 ${boss.name} was hit for ${characterNFT.attackDamage}!`}</div>
         </div>
       )}
-      {/* Boss */}
-      {boss && (
-        <div className="boss-container">
-          <div className={`boss-content ${attackState}`}>
-            <h2>🔥 {boss.name} 🔥</h2>
-            <div className="image-content">
-              <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
-              <div className="health-bar">
-                <progress value={boss.hp} max={boss.maxHp} />
-                <p>{`${boss.hp} / ${boss.maxHp} HP`}</p>
+      <div className="battle-container">
+        {/* Character NFT */}
+        {characterNFT && (
+          <div className="players-container">
+            <div className="player-container">
+              <div className="player">
+                <div className="image-content">
+                  <h2>{characterNFT.name}</h2>
+                  <img
+                    src={characterNFT.imageURI}
+                    alt={`Character ${characterNFT.name}`}
+                  />
+                  <div className="health-bar">
+                    <progress value={characterNFT.hp} max={characterNFT.maxHp} />
+                    <p>{`${characterNFT.hp} / ${characterNFT.maxHp} HP`}</p>
+                  </div>
+                </div>
+                <div className="stats">
+                  <h4>{`⚔️ Attack Damage: ${characterNFT.attackDamage}`}</h4>
+                </div>
               </div>
             </div>
           </div>
-          {attackState === 'attacking' ? (
-            <div className="loading-indicator">
-              <LoadingIndicator />
-              <p>Attacking ⚔️</p>
-            </div>
-          ) : (
-            <div className="attack-container">
-              <button className="cta-button" onClick={runAttackAction}>
-                {`💥 Attack ${boss.name}`}
-              </button>
-            </div>
-          )}
+        )}
+        <div className="versus">
+          <img src="https://i.imgur.com/NSptv9M.png" alt="versus" />
         </div>
-      )}
-
-      {/* Character NFT */}
-      {characterNFT && (
-        <div className="players-container">
-          <div className="player-container">
-            <h2>Your Character</h2>
-            <div className="player">
+        {/* Boss */}
+        {boss && (
+          <div className="boss-container">
+            <div className={`boss-content ${attackState}`}>
+              <h2>🔥 {boss.name} 🔥</h2>
               <div className="image-content">
-                <h2>{characterNFT.name}</h2>
-                <img
-                  src={characterNFT.imageURI}
-                  alt={`Character ${characterNFT.name}`}
-                />
+                <img src={boss.imageURI} alt={`Boss ${boss.name}`} />
                 <div className="health-bar">
-                  <progress value={characterNFT.hp} max={characterNFT.maxHp} />
-                  <p>{`${characterNFT.hp} / ${characterNFT.maxHp} HP`}</p>
+                  <progress value={boss.hp} max={boss.maxHp} />
+                  <p>{`${boss.hp} / ${boss.maxHp} HP`}</p>
                 </div>
               </div>
               <div className="stats">
-                <h4>{`⚔️ Attack Damage: ${characterNFT.attackDamage}`}</h4>
+                <h4>{`⚔️ Attack Damage: ???`}</h4>
               </div>
             </div>
           </div>
+        )}
+      </div>
+      {characterNFT.hp !== 0 ? (
+        attackState === 'attacking' ? (
+         <div className="loading-indicator">
+           <LoadingIndicator />
+         </div>
+        ) : (
+         <div className="attack-container">
+           <button className="cta-button" onClick={runAttackAction}>
+             {`💥 Attack`}
+           </button>
+         </div>
+        )
+      ) : (
+        <div className="attack-container">
+          <button className="cta-button" onClick={runMintAction}>
+             {`🦸‍♂️ Mint another Avenger`}
+           </button>
         </div>
-      )}
+      )} 
     </div>
   );
 };
