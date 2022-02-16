@@ -8,8 +8,8 @@ const main = async () => {
     "https://i.imgur.com/GiGkbmj.jpeg",
     "https://i.imgur.com/DxxnUpa.jpeg",
     "https://i.imgur.com/uXS9Ewv.jpeg"],
-    [300, 500, 800, 200, 1000, 200],                    // HP values
-    [300, 500, 1000, 200, 800, 200],                       // Attack damage values
+    [1000, 900, 1100, 800, 1500, 800],                    // HP values
+    [600, 700, 1000, 500, 1500, 500],                       // Attack damage values
     "Thanos", // Boss name
     "https://i.imgur.com/hVuFcaF.jpeg", // Boss image
     500000, // Boss hp

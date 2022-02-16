@@ -120,7 +120,12 @@ const App = () => {
 
     if (currentAccount) {
       console.log('CurrentAccount:', currentAccount);
-      fetchNFTMetadata();
+      console.log(window.ethereum.networkVersion);
+      if (window.ethereum.networkVersion !== "4") {
+        alert("Please connect to Rinkeby Test Network!");
+      } else {
+        fetchNFTMetadata();
+      }
     }
   }, [currentAccount]);
 

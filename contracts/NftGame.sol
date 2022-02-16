@@ -150,31 +150,64 @@ contract NftGame is ERC721, VRFConsumerBase {
     attackRNGVerdict(randomResult, playerAddr);
   }
 
-  function parseRandomNumber(uint256 random) internal pure returns (uint256, uint256) {
+  function parseRandomNumber(uint256 random) internal pure returns (uint256, uint256, uint256, uint256) {
     uint256 playerCritChance = random % 100;
     uint256 bossCritChance = (random / 100) % 100;
-    return (playerCritChance, bossCritChance);
+    uint256 playerHitChance = (random / 10000) % 100;
+    uint256 bossHitChance = (random / 1000000) % 100;
+    return (playerCritChance, bossCritChance, playerHitChance, bossHitChance);
+  }
+
+  function determineAttackValues(
+    uint256 playerAttackDamage,
+    uint256 playerCritChance, 
+    uint256 playerHitChance, 
+    uint256 critValue, 
+    uint256 accuracy
+  ) public view onlyVRFC returns(uint256) {
+    uint256 playerTotalDamage = 0;
+    if (playerCritChance <= critValue) {
+      playerTotalDamage = playerAttackDamage * 2;
+    } else {
+      playerTotalDamage = playerAttackDamage;
+    }
+    if (playerHitChance > accuracy) {
+      playerTotalDamage = 0;
+    }
+    return playerTotalDamage;
   }
 
   function attackRNGVerdict(uint256 random, address playerAddr) public onlyVRFC {
     uint256 nftTokenIdOfPlayer = nftHolders[playerAddr];
     CharacterAttributes storage player = nftHolderAttributes[nftTokenIdOfPlayer];
 
-    (uint256 playerCritChance, uint256 bossCritChance) = parseRandomNumber(random);
+    (uint256 playerCritChance, uint256 bossCritChance, uint256 playerHitChance, uint bossHitChance) = parseRandomNumber(random);
 
     uint256 playerTotalDamage = 0;
     uint256 bossTotalDamage = 0;
 
-    if (playerCritChance < 50) {
-      playerTotalDamage = player.attackDamage * 2;
-    } else {
-      playerTotalDamage = player.attackDamage;
+    if (keccak256(abi.encodePacked(player.name)) == keccak256(abi.encodePacked("Captain America"))) {
+      playerTotalDamage = determineAttackValues(player.attackDamage, playerCritChance, playerHitChance, 40, 70);
+    } else if (keccak256(abi.encodePacked(player.name)) == keccak256(abi.encodePacked("Iron Man"))) {
+      playerTotalDamage = determineAttackValues(player.attackDamage, playerCritChance, playerHitChance, 60, 70);
+    } else if (keccak256(abi.encodePacked(player.name)) == keccak256(abi.encodePacked("Thor"))) {
+      playerTotalDamage = determineAttackValues(player.attackDamage, playerCritChance, playerHitChance, 60, 60);
+    } else if (keccak256(abi.encodePacked(player.name)) == keccak256(abi.encodePacked("Hawkeye"))) {
+      playerTotalDamage = determineAttackValues(player.attackDamage, playerCritChance, playerHitChance, 60, 90);
+    } else if (keccak256(abi.encodePacked(player.name)) == keccak256(abi.encodePacked("Hulk"))) {
+      playerTotalDamage = determineAttackValues(player.attackDamage, playerCritChance, playerHitChance, 40, 50);
+    } else if (keccak256(abi.encodePacked(player.name)) == keccak256(abi.encodePacked("Black Widow"))) {
+      playerTotalDamage = determineAttackValues(player.attackDamage, playerCritChance, playerHitChance, 80, 70);
     }
 
-    if (bossCritChance < 50) {
+    if (bossCritChance <= 30) {
       bossTotalDamage = bigBoss.attackDamage * 2;
     } else {
       bossTotalDamage = bigBoss.attackDamage;
+    }
+
+    if (bossHitChance > 70) {
+      bossTotalDamage = 0;
     }
 
     // Allow player to attack boss.

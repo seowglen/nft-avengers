@@ -74,10 +74,16 @@ const Arena = ({ characterNFT, setCharacterNFT, currentAccount }) => {
     };
 
     const onAttackComplete = (newBossHp, newPlayerHp, playerAddress, bossAttackDamage, playerAttackDamage) => {
+
+      console.log("attack completed.")
+
       const bossHp = newBossHp.toNumber();
       const playerHp = newPlayerHp.toNumber();
       const bossDamage = bossAttackDamage.toNumber();
       const playerDamage = playerAttackDamage.toNumber();
+
+      console.log(`Boss damage: ${bossDamage}`);
+      console.log(`Player damage: ${playerDamage}`);
 
       setBoss((prevState) => {
         return { ...prevState, hp: bossHp };
@@ -89,11 +95,15 @@ const Arena = ({ characterNFT, setCharacterNFT, currentAccount }) => {
         });
 
         if (bossDamage > 0) {
-          setAttackStateBoss('hit');
+          setAttackStatePlayer('hit');
+        } else {
+          setAttackStatePlayer('');
         }
 
         if (playerDamage > 0) {
-          setAttackStatePlayer('hit');
+          setAttackStateBoss('hit');
+        } else {
+          setAttackStateBoss('');
         }
       }
 
@@ -185,9 +195,12 @@ const Arena = ({ characterNFT, setCharacterNFT, currentAccount }) => {
       </div>
       {characterNFT.hp !== 0 ? (
         attackStatePlayer === 'attacking' ? ( 
+        <>
+          <p>Loading... This may take a few minutes</p>
           <div className="loading-indicator">
             <LoadingIndicator />
           </div>
+        </>
         ) : (
          <div className="attack-container">
            <button className="cta-button" onClick={runAttackAction}>
