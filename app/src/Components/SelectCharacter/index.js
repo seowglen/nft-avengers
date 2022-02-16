@@ -38,7 +38,7 @@ const SelectCharacter = ({ setCharacterNFT }) => {
           <div className="character-image">
             <img src={character.imageURI} alt={character.name} />
             <div className="description">
-              <div className="text">John Doe</div>
+              <div className="text">{character.name}</div>
             </div>
           </div>
           <button
